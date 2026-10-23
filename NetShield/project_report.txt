@@ -1,0 +1,80 @@
+NETSHIELD — NETWORK INTRUSION DETECTION SYSTEM
+Rule-Based Cybersecurity Project Report
+
+Submitted for: BharatCares | IBM SkillsBuild Cybersecurity Bootcamp
+Technology: Python, Pandas, Streamlit, Plotly
+Method: Rule-based analysis; no machine learning
+
+1. ABSTRACT
+NetShield is a small educational Network Intrusion Detection System (NIDS) dashboard. It analyzes network-flow records stored in a CSV file and applies transparent rules to identify traffic patterns that may deserve investigation. It highlights possible port scanning, unusually high flow counts from a source IP, and unusually large flows. The application provides severity labels, explanations, charts, filters, and downloadable results. NetShield is a static CSV analysis tool; it does not capture live packets and does not use machine learning.
+
+2. INTRODUCTION
+Networks produce traffic records that can help administrators understand communication patterns and investigate suspicious activity. Reviewing many records manually can be time-consuming. NetShield demonstrates how simple Python rules can summarize traffic and highlight records for further review. The project is designed for learning and demonstration, not as a replacement for professional security monitoring.
+
+3. PROBLEM STATEMENT
+Manually reviewing network-flow CSV data can make it difficult to quickly identify sources that contact many ports, generate a high number of flows, or transfer unusually large amounts of data. A lightweight tool is needed to validate the data, apply understandable checks, and present results clearly.
+
+4. OBJECTIVES
+• Accept network-flow data from a CSV file.
+• Validate required fields and handle invalid rows.
+• Apply understandable rule-based checks without ML.
+• Assign severity labels and provide reasons for alerts.
+• Visualize traffic summaries and allow CSV export.
+• Demonstrate the system using synthetic sample traffic.
+
+5. SCOPE
+Included: offline CSV analysis, data validation, three rule-based indicators, dashboard charts, filtering, and exports.
+Not included: live packet capture, automated blocking, threat-intelligence lookups, ML training, or claims of confirmed compromise.
+
+6. TECHNOLOGIES
+Python: application and detection logic.
+Pandas: reading, validating, cleaning, and summarizing CSV data.
+Streamlit: interactive web dashboard.
+Plotly: interactive charts.
+CSV: input and output format.
+
+7. SYSTEM DESIGN
+Input: user-uploaded CSV or generated synthetic data.
+Processing: check required columns; convert numeric fields; remove invalid records; calculate source-level port and flow counts; apply rules.
+Output: records annotated with severity and alert reasons, charts, and downloadable CSV files.
+
+Workflow:
+1. Choose sample data or upload a CSV.
+2. Validate required columns: src_ip, dst_ip, dst_port, protocol, bytes, packets.
+3. Clean invalid values and report validation notes.
+4. Calculate unique destination ports and flow counts for each source IP.
+5. Apply the configured thresholds.
+6. Display the results and let the user filter or download them.
+
+8. DETECTION RULES
+Rule 1 — Possible port scan (High): if a source IP contacts at least the configured number of distinct destination ports, its flow records are flagged as possible scan activity.
+Rule 2 — High source flow count (Medium): if a source IP generates at least the configured number of flow records, its records are flagged for review unless a higher-severity rule applies.
+Rule 3 — High bytes per flow (Medium): if one flow reaches the configured byte threshold, that record is flagged unless a higher-severity rule applies.
+Low: no configured rule triggers.
+
+Default thresholds are adjustable in the application. These thresholds are demonstration settings and should be calibrated to the environment before operational use.
+
+9. IMPLEMENTATION
+The project is separated into four Python modules:
+• app.py: user interface, input selection, dashboard, filters, and exports.
+• preprocessing.py: required-column checks and data cleaning.
+• detector.py: applies the rules and adds severity and explanation fields.
+• generate_data.py: creates safe synthetic traffic for demonstration.
+The requirements.txt file lists Streamlit, Pandas, and Plotly. No ML libraries or model files are needed.
+
+10. TEST PLAN
+Test 1: Load sample traffic. Expected: dashboard displays flow totals, severity counts, and charts.
+Test 2: Source contacts many distinct ports. Expected: High severity and a possible-port-scan explanation.
+Test 3: Flow exceeds byte threshold. Expected: Medium severity unless another rule assigns High.
+Test 4: CSV is missing a required column. Expected: clear error identifying missing columns.
+Test 5: CSV has invalid numeric values. Expected: invalid rows are removed and notes are shown.
+Test 6: Download analysis. Expected: exported CSV includes severity and alert_reason.
+
+11. LIMITATIONS
+The system relies on fixed thresholds and simplified flow records. Legitimate software updates, backups, scanners, and busy servers may trigger alerts. Some attacks may not trigger any rule. The system does not establish intent or prove an intrusion. Results should be reviewed by a qualified person and correlated with other logs.
+
+12. ETHICAL AND SAFE USE
+Use only datasets you own or are explicitly authorized to analyze. The sample data is synthetic and uses documentation-style IP ranges. Do not use the application to access, scan, or disrupt unauthorized systems. Treat alerts as investigative leads rather than definitive accusations.
+
+13. CONCLUSION
+NetShield demonstrates a practical, beginner-friendly cybersecurity workflow using Python and transparent rules. It validates CSV traffic data, flags selected patterns, visualizes results, and exports findings. The project meets the objective of building a small NIDS-style prototype without machine learning and can be extended later with additional rules, better input schemas, and authorized real-world datasets.
